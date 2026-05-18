@@ -1,9 +1,9 @@
 CommunityHub Ultimate
 
-Platform Media Sosial dan Forum Komunitas Berbasis Web
+Forum Komunitas Berbasis Web
 
 Deskripsi
-  CommunityHub Ultimate merupakan platform media sosial dan forum komunitas berbasis web yang dirancang untuk memudahkan pengguna dalam berinteraksi, berbagi informasi, membuat postingan, serta berkomunikasi secara online melalui fitur chat dan komentar.
+  CommunityHub Ultimate merupakan Forum komunitas berbasis web yang dirancang untuk memudahkan pengguna dalam berinteraksi, berbagi informasi, membuat postingan, serta berkomunikasi secara online melalui fitur chat dan komentar.
   Website ini menyediakan berbagai fitur interaktif seperti upload postingan, sistem like dan comment, follow pengguna lain, realtime chat, notifikasi, serta dashboard admin untuk pengelolaan data pengguna dan konten. Dengan tampilan modern dan responsive, CommunityHub Ultimate diharapkan dapat menjadi platform komunitas digital yang menarik dan mudah digunakan.
 Menu Utama
 
