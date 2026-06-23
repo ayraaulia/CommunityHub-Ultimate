@@ -15,33 +15,36 @@ $success = '';
 if (isset($_POST['register'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
-    $nama = trim($_POST['nama']);
-    $jurusan = trim($_POST['jurusan']);
-    $angkatan = intval($_POST['angkatan']);
-    $role = $_POST['role'];
+    $nama     = trim($_POST['nama']);
+    $jurusan  = trim($_POST['jurusan']);
+    $role     = $_POST['role'];
+    // Angkatan hanya wajib untuk mahasiswa; dosen tidak perlu, simpan sebagai 0
+    $angkatan = ($role === 'mahasiswa') ? intval($_POST['angkatan']) : 0;
 
-    // Input validation
-    if (empty($username) || empty($password) || empty($nama) || empty($jurusan) || empty($angkatan)) {
+    // Validasi field dasar
+    if (empty($username) || empty($password) || empty($nama) || empty($jurusan)) {
         $error = "Semua field wajib diisi!";
-    } elseif ($angkatan < 1950 || $angkatan > date('Y') + 2) {
-        $error = "Tahun angkatan tidak valid!";
     } elseif (!in_array($role, ['mahasiswa', 'dosen'])) {
         $error = "Role tidak valid!";
+    } elseif ($role === 'mahasiswa' && ($angkatan < 1950 || $angkatan > date('Y') + 2)) {
+        $error = "Tahun angkatan tidak valid!";
+    } elseif ($role === 'mahasiswa' && empty($angkatan)) {
+        $error = "Tahun angkatan wajib diisi untuk mahasiswa!";
     } else {
-        // Check if username already exists
+        // Cek apakah username sudah digunakan
         $stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE username = ?");
         mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_store_result($stmt);
-        
+
         if (mysqli_stmt_num_rows($stmt) > 0) {
             $error = "Username sudah digunakan!";
         } else {
-            // Insert user
+            // Insert user baru
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $insert_stmt = mysqli_prepare($conn, "INSERT INTO users (username, password, nama, jurusan, angkatan, role) VALUES (?, ?, ?, ?, ?, ?)");
             mysqli_stmt_bind_param($insert_stmt, "ssssis", $username, $hashed_password, $nama, $jurusan, $angkatan, $role);
-            
+
             if (mysqli_stmt_execute($insert_stmt)) {
                 $success = "Registrasi berhasil! Silakan masuk.";
             } else {
@@ -86,13 +89,8 @@ include 'includes/header.php';
             </div>
 
             <div class="form-group">
-                <label for="jurusan">Jurusan</label>
+                <label for="jurusan">Jurusan / Departemen</label>
                 <input type="text" id="jurusan" name="jurusan" placeholder="Contoh: Teknik Informatika" required value="<?php echo isset($_POST['jurusan']) ? htmlspecialchars($_POST['jurusan']) : ''; ?>">
-            </div>
-
-            <div class="form-group">
-                <label for="angkatan">Angkatan (Tahun)</label>
-                <input type="number" id="angkatan" name="angkatan" placeholder="Contoh: 2023" required value="<?php echo isset($_POST['angkatan']) ? htmlspecialchars($_POST['angkatan']) : ''; ?>">
             </div>
 
             <div class="form-group">
@@ -102,6 +100,39 @@ include 'includes/header.php';
                     <option value="dosen" <?php echo (isset($_POST['role']) && $_POST['role'] == 'dosen') ? 'selected' : ''; ?>>Dosen / Pengajar</option>
                 </select>
             </div>
+
+            <!-- Field angkatan: hanya tampil dan wajib diisi jika pilih Mahasiswa -->
+            <div class="form-group" id="angkatan-group" style="<?php echo (isset($_POST['role']) && $_POST['role'] === 'dosen') ? 'display:none;' : ''; ?>">
+                <label for="angkatan">Angkatan (Tahun Masuk)</label>
+                <input type="number" id="angkatan" name="angkatan"
+                       placeholder="Contoh: 2023"
+                       value="<?php echo isset($_POST['angkatan']) ? htmlspecialchars($_POST['angkatan']) : ''; ?>">
+                <small style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">
+                    Tahun pertama kali Anda kuliah di kampus ini.
+                </small>
+            </div>
+
+            <script>
+            (function() {
+                var roleSelect    = document.getElementById('role');
+                var angkatanGroup = document.getElementById('angkatan-group');
+                var angkatanInput = document.getElementById('angkatan');
+
+                function updateAngkatan() {
+                    if (roleSelect.value === 'dosen') {
+                        angkatanGroup.style.display = 'none';
+                        angkatanInput.removeAttribute('required');
+                        angkatanInput.value = '';
+                    } else {
+                        angkatanGroup.style.display = 'block';
+                        angkatanInput.setAttribute('required', 'required');
+                    }
+                }
+
+                roleSelect.addEventListener('change', updateAngkatan);
+                updateAngkatan(); // jalankan saat halaman load
+            })();
+            </script>
 
             <button type="submit" name="register" class="btn" style="width:100%; margin-top:10px;">Daftar Sekarang</button>
         </form>

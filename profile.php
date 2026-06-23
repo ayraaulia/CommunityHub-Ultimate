@@ -198,15 +198,25 @@ include 'includes/header.php';
                     </div>
 
                     <div class="form-group">
-                        <label for="jurusan">Jurusan</label>
+                        <label for="jurusan">Jurusan / Departemen</label>
                         <input type="text" id="jurusan" name="jurusan" 
                                value="<?php echo htmlspecialchars($user_data['jurusan']); ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="angkatan">Angkatan (Tahun)</label>
+                        <?php 
+                        $is_dosen = ($user_data['role'] === 'dosen');
+                        $angkatan_label = $is_dosen ? 'Tahun Mulai Mengajar' : 'Angkatan (Tahun Masuk)';
+                        $angkatan_hint  = $is_dosen 
+                            ? 'Tahun pertama kali Anda mulai mengajar / bergabung sebagai pengajar.'
+                            : 'Tahun pertama kali Anda kuliah di kampus ini.';
+                        ?>
+                        <label for="angkatan"><?php echo $angkatan_label; ?></label>
                         <input type="number" id="angkatan" name="angkatan" 
                                value="<?php echo htmlspecialchars($user_data['angkatan']); ?>" required>
+                        <small style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">
+                            <?php echo $angkatan_hint; ?>
+                        </small>
                     </div>
 
                     <div class="form-group">
