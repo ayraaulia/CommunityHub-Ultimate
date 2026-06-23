@@ -1,7 +1,7 @@
 <?php
 // login.php
-include 'db.php';
 session_start();
+require_once 'includes/db.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['user_id'])) {
@@ -27,6 +27,7 @@ if (isset($_POST['login'])) {
         if ($row = mysqli_fetch_assoc($result)) {
             // Verify password using bcrypt hash
             if (password_verify($password, $row['password'])) {
+                mysqli_stmt_close($stmt);
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['nama'] = $row['nama'];
@@ -40,30 +41,15 @@ if (isset($_POST['login'])) {
                 $error = "Username atau password salah!";
             }
         } else {
-            // Check if md5 is used for legacy support in database (if schema is old, but setup_db handles seeding, so this is just in case, but bcrypt is primary now)
             $error = "Username atau password salah!";
         }
         mysqli_stmt_close($stmt);
     }
 }
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - CommunityHub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
-<nav>
-    <h1><a href="index.php">CommunityHub</a></h1>
-    <div class="nav-links">
-        <a href="login.php" class="nav-item">Masuk</a>
-        <a href="register.php" class="nav-item">Daftar</a>
-    </div>
-</nav>
+$page_title = "Masuk";
+include 'includes/header.php';
+?>
 
 <div class="container" style="display:flex; justify-content:center; align-items:center; min-height:75vh; margin-top:0; margin-bottom:0;">
     <div class="form-container" style="margin:20px 0;">
@@ -91,9 +77,4 @@ if (isset($_POST['login'])) {
     </div>
 </div>
 
-<footer>
-    &copy; <?php echo date('Y'); ?> CommunityHub. All rights reserved.
-</footer>
-
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>

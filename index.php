@@ -1,7 +1,7 @@
 <?php
 // index.php
-session_start();
-include 'db.php';
+$page_title = "Platform Komunitas & Forum Diskusi Akademik";
+include 'includes/header.php';
 
 // Safe queries for statistics
 $total_users = 0;
@@ -21,63 +21,36 @@ if ($t_res) { $total_threads = mysqli_fetch_assoc($t_res)['count']; }
 $com_res = mysqli_query($conn, "SELECT COUNT(*) AS count FROM comments");
 if ($com_res) { $total_comments = mysqli_fetch_assoc($com_res)['count']; }
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CommunityHub - Forum Diskusi Akademik</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 24px;
-            border-radius: var(--radius);
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-        .stat-num {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-    </style>
-</head>
-<body>
+<style>
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin: 40px 0;
+    }
+    .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 24px;
+        border-radius: var(--radius);
+        text-align: center;
+        box-shadow: var(--shadow);
+    }
+    .stat-num {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+    .stat-label {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
 
-<nav>
-    <h1><a href="index.php">CommunityHub</a></h1>
-    <div class="nav-links">
-        <?php if (isset($_SESSION['user_id'])) { ?>
-            <a href="dashboard.php" class="nav-item">Dashboard</a>
-            <a href="profile.php" class="nav-item">Profil Saya</a>
-            <div class="nav-user-badge">
-                <span><?php echo htmlspecialchars($_SESSION['nama']); ?></span>
-                <span class="role-badge <?php echo htmlspecialchars($_SESSION['role']); ?>"><?php echo htmlspecialchars($_SESSION['role']); ?></span>
-            </div>
-            <a href="logout.php" class="btn btn-secondary btn-sm">Keluar</a>
-        <?php } else { ?>
-            <a href="login.php" class="nav-item">Masuk</a>
-            <a href="register.php" class="nav-item">Daftar</a>
-            <a href="register.php" class="btn btn-sm">Gabung Sekarang</a>
-        <?php } ?>
-    </div>
-</nav>
 
 <section class="hero">
     <h2>Platform Komunitas & Forum Diskusi Akademik</h2>
@@ -133,9 +106,4 @@ if ($com_res) { $total_comments = mysqli_fetch_assoc($com_res)['count']; }
     </div>
 </div>
 
-<footer>
-    &copy; <?php echo date('Y'); ?> CommunityHub. All rights reserved.
-</footer>
-
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>

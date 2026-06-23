@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `jurusan` VARCHAR(100) NOT NULL,
   `angkatan` INT NOT NULL,
   `role` ENUM('admin', 'dosen', 'mahasiswa') NOT NULL,
+  `foto_profil` VARCHAR(255) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

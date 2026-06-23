@@ -1,7 +1,7 @@
 <?php
 // register.php
-include 'db.php';
 session_start();
+require_once 'includes/db.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['user_id'])) {
@@ -52,24 +52,10 @@ if (isset($_POST['register'])) {
         mysqli_stmt_close($stmt);
     }
 }
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Akun - CommunityHub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
-<nav>
-    <h1><a href="index.php">CommunityHub</a></h1>
-    <div class="nav-links">
-        <a href="login.php" class="nav-item">Masuk</a>
-        <a href="register.php" class="nav-item">Daftar</a>
-    </div>
-</nav>
+$page_title = "Daftar Akun";
+include 'includes/header.php';
+?>
 
 <div class="container" style="display:flex; justify-content:center; align-items:center; min-height:80vh; margin-top:0; margin-bottom:0;">
     <div class="form-container" style="margin:20px 0;">
@@ -124,9 +110,4 @@ if (isset($_POST['register'])) {
     </div>
 </div>
 
-<footer>
-    &copy; <?php echo date('Y'); ?> CommunityHub. All rights reserved.
-</footer>
-
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>

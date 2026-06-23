@@ -1,7 +1,7 @@
 <?php
 // dashboard.php
-include 'db.php';
 session_start();
+require_once 'includes/db.php';
 
 // Redirect to login if not logged in
 if (!isset($_SESSION['user_id'])) {
@@ -9,9 +9,15 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$page_title = "Dashboard";
+include 'includes/header.php';
+
+
+
 $user_id = $_SESSION['user_id'];
 
 // Fetch all courses along with assigned dosen name and thread stats
+// Fixed ONLY_FULL_GROUP_BY database bug by grouping by all non-aggregated columns
 $courses_query = "
     SELECT 
         c.id, 
@@ -24,36 +30,11 @@ $courses_query = "
     FROM courses c
     LEFT JOIN users u ON c.dosen_id = u.id
     LEFT JOIN threads t ON c.id = t.course_id
-    GROUP BY c.id
+    GROUP BY c.id, c.name, c.code, c.description, u.nama
     ORDER BY c.code ASC
 ";
 $courses_result = mysqli_query($conn, $courses_query);
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CommunityHub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<nav>
-    <h1><a href="dashboard.php">CommunityHub</a></h1>
-    <div class="nav-links">
-        <a href="dashboard.php" class="nav-item">Dashboard</a>
-        <?php if ($_SESSION['role'] === 'admin') { ?>
-            <a href="admin.php" class="nav-item">Panel Admin</a>
-        <?php } ?>
-        <a href="profile.php" class="nav-item">Profil Saya</a>
-        <div class="nav-user-badge">
-            <span><?php echo htmlspecialchars($_SESSION['nama']); ?></span>
-            <span class="role-badge <?php echo htmlspecialchars($_SESSION['role']); ?>"><?php echo htmlspecialchars($_SESSION['role']); ?></span>
-        </div>
-        <a href="logout.php" class="btn btn-secondary btn-sm">Keluar</a>
-    </div>
-</nav>
 
 <div class="container">
     <div class="dashboard-grid">
@@ -107,11 +88,17 @@ $courses_result = mysqli_query($conn, $courses_query);
         <!-- Sidebar Widget -->
         <div>
             <div class="profile-widget">
-                <div class="profile-avatar">
-                    <?php echo strtoupper(substr($_SESSION['nama'], 0, 1)); ?>
-                </div>
-                <h3><?php echo htmlspecialchars($_SESSION['nama']); ?></h3>
-                <p class="role" style="margin-top: 5px;"><span class="role-badge <?php echo htmlspecialchars($_SESSION['role']); ?>"><?php echo htmlspecialchars($_SESSION['role']); ?></span></p>
+                <?php 
+                $pic_path = 'uploads/profile_pics/' . $current_user['foto_profil'];
+                if (!empty($current_user['foto_profil']) && file_exists(__DIR__ . '/' . $pic_path)) { ?>
+                    <img src="<?php echo htmlspecialchars($pic_path); ?>" alt="Foto Profil" class="profile-avatar-img">
+                <?php } else { ?>
+                    <div class="profile-avatar">
+                        <?php echo strtoupper(substr($current_user['nama'], 0, 1)); ?>
+                    </div>
+                <?php } ?>
+                <h3><?php echo htmlspecialchars($current_user['nama']); ?></h3>
+                <p class="role" style="margin-top: 5px;"><span class="role-badge <?php echo htmlspecialchars($current_user['role']); ?>"><?php echo htmlspecialchars($current_user['role']); ?></span></p>
                 
                 <div class="profile-details">
                     <p style="margin-bottom: 8px;"><strong>Jurusan:</strong> <?php echo htmlspecialchars($_SESSION['jurusan']); ?></p>
@@ -134,9 +121,4 @@ $courses_result = mysqli_query($conn, $courses_query);
     </div>
 </div>
 
-<footer>
-    &copy; <?php echo date('Y'); ?> CommunityHub. All rights reserved.
-</footer>
-
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>

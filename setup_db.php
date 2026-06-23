@@ -44,6 +44,17 @@ if (mysqli_multi_query($conn, $schema_sql)) {
 }
 
 // 5. Seed initial data
+// Clear profile picture uploads folder if it exists
+$upload_dir = __DIR__ . '/uploads/profile_pics/';
+if (is_dir($upload_dir)) {
+    $files = glob($upload_dir . '*');
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            @unlink($file);
+        }
+    }
+}
+
 // Clear existing data to allow clean re-runs
 mysqli_query($conn, "SET FOREIGN_KEY_CHECKS = 0");
 mysqli_query($conn, "TRUNCATE TABLE upvotes");
