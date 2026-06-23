@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleBtn.setAttribute('aria-label', 'Toggle password visibility');
         toggleBtn.addEventListener('click', function () {
             input.type   = input.type === 'password' ? 'text' : 'password';
-            this.opacity = 1;
+            this.style.opacity = '1';
         });
         wrapper.appendChild(toggleBtn);
     });

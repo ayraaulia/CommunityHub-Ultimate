@@ -36,8 +36,12 @@ if (isset($_POST['update_profile'])) {
             $max_size = 2 * 1024 * 1024; // 2MB
             $upload_dir = __DIR__ . '/uploads/profile_pics/';
 
-            // Server-side validation
-            if (!in_array($file['type'], $allowed_types)) {
+            // Server-side MIME validation using finfo (cannot be spoofed unlike $_FILES['type'])
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $real_mime = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($real_mime, $allowed_types)) {
                 $error = "Format foto tidak valid. Hanya .jpg, .jpeg, dan .png yang diizinkan.";
             } elseif ($file['size'] > $max_size) {
                 $error = "Ukuran foto terlalu besar. Maksimal 2MB.";
@@ -78,10 +82,12 @@ if (isset($_POST['update_profile'])) {
         if (empty($error)) {
             if ($new_foto_profil !== null) {
                 // Update nama, jurusan, angkatan, AND foto_profil
+                // Types: s=nama, s=jurusan, i=angkatan, s=foto_profil, i=user_id
                 $stmt = mysqli_prepare($conn, "UPDATE users SET nama = ?, jurusan = ?, angkatan = ?, foto_profil = ? WHERE id = ?");
-                mysqli_stmt_bind_param($stmt, "sssii", $nama, $jurusan, $angkatan, $new_foto_profil, $user_id);
+                mysqli_stmt_bind_param($stmt, "ssisi", $nama, $jurusan, $angkatan, $new_foto_profil, $user_id);
             } else {
                 // Update only nama, jurusan, angkatan (no photo change)
+                // Types: s=nama, s=jurusan, i=angkatan, i=user_id
                 $stmt = mysqli_prepare($conn, "UPDATE users SET nama = ?, jurusan = ?, angkatan = ? WHERE id = ?");
                 mysqli_stmt_bind_param($stmt, "ssii", $nama, $jurusan, $angkatan, $user_id);
             }

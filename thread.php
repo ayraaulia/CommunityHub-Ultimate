@@ -329,6 +329,7 @@ include 'includes/header.php';
                     <div class="form-group">
                         <textarea name="comment_content" rows="4"
                                   placeholder="Ketik komentar, tanggapan, atau jawaban yang membantu di sini..."
+                                  maxlength="5000"
                                   required></textarea>
                     </div>
                     <button type="submit" name="create_comment" class="btn">Kirim Tanggapan</button>

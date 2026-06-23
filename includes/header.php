@@ -54,6 +54,10 @@ $title_prefix = isset($page_title) ? $page_title . " - " : "";
 <nav>
     <h1><a href="index.php">CommunityHub</a></h1>
     <div class="nav-links">
+        <!-- Hamburger button (visible on mobile, hidden on desktop) -->
+        <button id="nav-toggle" class="nav-hamburger" aria-label="Toggle Navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
         <?php if ($current_user) { ?>
             <a href="dashboard.php" class="nav-item">Dashboard</a>
             <?php if ($current_user['role'] === 'admin') { ?>
