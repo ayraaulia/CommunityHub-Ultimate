@@ -233,10 +233,10 @@ users ────────────────────────�
 
 | # | File | Deskripsi Bug | Status |
 |---|---|---|---|
-| 1 | `profile.php` | Validasi angkatan tidak membedakan role dosen & mahasiswa — dosen dengan angkatan `0` selalu gagal validasi karena `0 < 1950` | 🔴 Open |
-| 2 | `admin.php` | `dosen_id = null` saat INSERT course bisa menyebabkan error bind_param pada beberapa versi PHP karena null di-bind ke tipe integer | 🔴 Open |
-| 3 | `dashboard.php` | Sidebar menampilkan **"Angkatan: 0"** untuk akun dosen karena angkatan dosen disimpan sebagai `0` | 🔴 Open |
-| 4 | `profile.php` | Field angkatan tidak memiliki batas bawah/atas yang tepat untuk role dosen pada saat edit profil | 🔴 Open |
+| 1 | `profile.php` | Validasi angkatan tidak membedakan role dosen & mahasiswa — dosen dengan angkatan `0` selalu gagal validasi karena `0 < 1950` | 
+| 2 | `admin.php` | `dosen_id = null` saat INSERT course bisa menyebabkan error bind_param pada beberapa versi PHP karena null di-bind ke tipe integer | 
+| 3 | `dashboard.php` | Sidebar menampilkan **"Angkatan: 0"** untuk akun dosen karena angkatan dosen disimpan sebagai `0` | 
+| 4 | `profile.php` | Field angkatan tidak memiliki batas bawah/atas yang tepat untuk role dosen pada saat edit profil | 
 
 ---
 
@@ -259,7 +259,7 @@ Membantu proses desain antarmuka, mengatasi bug yang ditemukan selama pengembang
 > *"tolong tambahin fitur hamburger menu buat mobile dan photo preview waktu ganti foto profil"*
 
 **4) Bagian output AI yang dipakai:**
-Struktur keseluruhan aplikasi (arsitektur file, skema database, sistem role), implementasi dark mode dengan LocalStorage, fitur upvote toggle, validasi MIME server-side untuk upload foto profil, dan hamburger menu responsif untuk mobile.
+solusi perbaikan bug pada fitur profile.php karna Validasi angkatan tidak membedakan role dosen & mahasiswa, `dosen_id = null` saat INSERT course bisa menyebabkan error bind_param pada beberapa versi PHP karena null di-bind ke tipe integer, dan Field angkatan tidak memiliki batas bawah/atas yang tepat untuk role dosen pada saat edit profil, perbaikan pada fitur dashboard.php karena Sidebar menampilkan **"Angkatan: 0"** untuk akun dosen karena angkatan dosen disimpan sebagai `0` 
 
 **5) Bagian yang diubah + alasan:**
 Beberapa logika validasi disesuaikan dengan kebutuhan spesifik (misalnya membedakan validasi angkatan antara role mahasiswa dan dosen). Desain visual dikustomisasi menggunakan palet warna dan tipografi yang disesuaikan dengan identitas platform akademik. Query database dioptimalkan untuk kompatibilitas MySQL `ONLY_FULL_GROUP_BY` mode.
