@@ -252,9 +252,9 @@ Membantu proses desain antarmuka, mengatasi bug yang ditemukan selama pengembang
 
 **3) 2–3 prompt utama yang digunakan:**
 
-> *"Buatkan web forum diskusi akademik menggunakan PHP & MySQL dengan fitur thread, komentar, upvote, dark mode, dan panel admin. Desain harus modern dan responsif."*
+> *"masi ada bug ga di web itu? tolong bantu cek."*  — untuk melakukan audit bug menyeluruh pada semua file PHP.
 
-> *"masi ada bug ga web itu?"* — untuk melakukan audit bug menyeluruh pada semua file PHP.
+> *"tolong bantu perbaiki bug nya"* 
 
 > *"tolong tambahin fitur hamburger menu buat mobile dan photo preview waktu ganti foto profil"*
 
