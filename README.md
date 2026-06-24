@@ -256,7 +256,7 @@ Membantu proses desain antarmuka, mengatasi bug yang ditemukan selama pengembang
 
 > *"tolong bantu perbaiki bug nya"* 
 
-> *"tolong tambahin fitur hamburger menu buat mobile dan photo preview waktu ganti foto profil"*
+> *"gimana cara buat fitur hamburger menu buat mobile dan photo preview waktu ganti foto profil"*
 
 **4) Bagian output AI yang dipakai:**
 solusi perbaikan bug pada fitur profile.php karna Validasi angkatan tidak membedakan role dosen & mahasiswa, `dosen_id = null` saat INSERT course bisa menyebabkan error bind_param pada beberapa versi PHP karena null di-bind ke tipe integer, dan Field angkatan tidak memiliki batas bawah/atas yang tepat untuk role dosen pada saat edit profil, perbaikan pada fitur dashboard.php karena Sidebar menampilkan **"Angkatan: 0"** untuk akun dosen karena angkatan dosen disimpan sebagai `0` 
