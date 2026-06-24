@@ -1,6 +1,5 @@
 <?php
-// includes/header.php
-// Global header template
+
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -8,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/db.php';
 
-// Fetch fresh user details if logged in (ensures avatar & name are always synchronized)
+// Ambil data user terbaru jika sudah login (memastikan avatar & nama selalu sinkron)
 $current_user = null;
 if (isset($_SESSION['user_id'])) {
     $header_stmt = mysqli_prepare($conn, "SELECT id, username, nama, role, foto_profil FROM users WHERE id = ?");
@@ -18,7 +17,7 @@ if (isset($_SESSION['user_id'])) {
     mysqli_stmt_close($header_stmt);
     
     if (!$current_user) {
-        // If user was deleted in the database, clear session and log out
+        // Jika user sudah dihapus dari database, hapus sesi dan logout otomatis
         $_SESSION = array();
         session_destroy();
         header("Location: login.php");
@@ -36,14 +35,14 @@ $title_prefix = isset($page_title) ? $page_title . " - " : "";
     <title><?php echo htmlspecialchars($title_prefix); ?>CommunityHub</title>
     <link rel="stylesheet" href="assets/css/style.css">
     
-    <!-- Dark Mode Initial Detection Script (Avoids Visual Flashing/Jittering) -->
+    <!-- Skrip Deteksi Mode Gelap Awal (Mencegah Kedipan/Jittering Visual) -->
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
             } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                // If no preference is saved, fallback to system preference
+                // Jika tidak ada preferensi tersimpan, gunakan preferensi sistem
                 document.documentElement.classList.add('dark');
             }
         })();
@@ -54,7 +53,7 @@ $title_prefix = isset($page_title) ? $page_title . " - " : "";
 <nav>
     <h1><a href="index.php">CommunityHub</a></h1>
     <div class="nav-links">
-        <!-- Hamburger button (visible on mobile, hidden on desktop) -->
+        <!-- Tombol hamburger (terlihat di mobile, tersembunyi di desktop) -->
         <button id="nav-toggle" class="nav-hamburger" aria-label="Toggle Navigation" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
@@ -85,13 +84,13 @@ $title_prefix = isset($page_title) ? $page_title . " - " : "";
             <a href="register.php" class="btn btn-sm">Gabung Sekarang</a>
         <?php } ?>
         
-        <!-- Dark Mode Toggle Button -->
+        <!-- Tombol Toggle Mode Gelap -->
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" title="Ubah Tema">
-            <!-- Sun Icon (shows in dark mode) -->
+            <!-- Ikon Matahari (muncul saat mode gelap aktif) -->
             <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828-9.9a5 5 0 117.071 7.071l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707"></path>
             </svg>
-            <!-- Moon Icon (shows in light mode) -->
+            <!-- Ikon Bulan (muncul saat mode terang aktif) -->
             <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
             </svg>

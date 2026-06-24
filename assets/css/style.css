@@ -67,7 +67,7 @@ body {
     flex-direction: column;
 }
 
-/* Navigation */
+/* Navigasi */
 nav {
     background: var(--bg-nav);
     color: white;
@@ -97,7 +97,7 @@ nav .nav-links {
     gap: 20px;
 }
 
-/* Hamburger button — hidden on desktop */
+/* Tombol hamburger — disembunyikan di desktop */
 .nav-hamburger {
     display: none;
     flex-direction: column;
@@ -110,7 +110,7 @@ nav .nav-links {
     padding: 6px;
     width: 36px;
     height: 36px;
-    order: -1; /* push to left side of nav-links */
+    order: -1; /* dorong ke sisi kiri nav-links */
 }
 
 .nav-hamburger span {
@@ -197,7 +197,7 @@ nav .nav-user-badge {
     text-transform: uppercase;
 }
 
-/* Theme Toggle Button */
+/* Tombol Ganti Tema */
 .theme-toggle-btn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -236,7 +236,7 @@ html.dark .moon-icon {
     display: none;
 }
 
-/* User Role Badges */
+/* Label Role Pengguna */
 .role-badge {
     display: inline-block;
     padding: 2px 8px;
@@ -262,7 +262,7 @@ html.dark .moon-icon {
     border: 1px solid rgba(37, 99, 235, 0.15);
 }
 
-/* Hero Section */
+/* Bagian Hero (Halaman Utama) */
 .hero {
     text-align: center;
     padding: 90px 20px;
@@ -360,7 +360,7 @@ html.dark .moon-icon {
     border-radius: 6px;
 }
 
-/* Container */
+/* Kontainer Utama */
 .container {
     max-width: 1200px;
     width: 90%;
@@ -368,7 +368,7 @@ html.dark .moon-icon {
     flex: 1;
 }
 
-/* Feature Cards on landing */
+/* Kartu Fitur di Halaman Landing */
 .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -406,7 +406,7 @@ html.dark .moon-icon {
     line-height: 1.6;
 }
 
-/* Login/Register Form */
+/* Form Login/Daftar */
 .form-container {
     width: 100%;
     max-width: 440px;
@@ -493,7 +493,7 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--success);
 }
 
-/* Dashboard Styles */
+/* Gaya Halaman Dashboard */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -516,7 +516,7 @@ input:focus, select:focus, textarea:focus {
     justify-content: space-between;
 }
 
-/* Course Card grid */
+/* Grid Kartu Mata Kuliah */
 .course-list {
     display: grid;
     grid-template-columns: 1fr;
@@ -594,7 +594,7 @@ input:focus, select:focus, textarea:focus {
     gap: 4px;
 }
 
-/* Profile Widget */
+/* Widget Profil */
 .profile-widget {
     background: var(--bg-card);
     padding: 28px 24px;
@@ -657,7 +657,7 @@ input:focus, select:focus, textarea:focus {
     color: var(--text-main);
 }
 
-/* Course details & filter controls */
+/* Detail Mata Kuliah & Kontrol Filter */
 .search-filter-box {
     background: var(--bg-card);
     padding: 20px;
@@ -704,14 +704,14 @@ input:focus, select:focus, textarea:focus {
     font-weight: 700;
 }
 
-/* Threads Feed */
+/* Umpan (Feed) Thread */
 .thread-feed {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Clickable thread card (anchor wrapping the whole card) */
+/* Kartu thread yang bisa diklik (anchor membungkus seluruh kartu) */
 .thread-card-link {
     display: block;
     background: var(--bg-card);
@@ -738,7 +738,7 @@ input:focus, select:focus, textarea:focus {
     gap: 12px;
 }
 
-/* Legacy .thread-card (kept for compatibility) */
+/* .thread-card lama (dipertahankan untuk kompatibilitas) */
 .thread-card {
     background: var(--bg-card);
     border-radius: var(--radius);
@@ -855,7 +855,7 @@ input:focus, select:focus, textarea:focus {
     margin-top: 5px;
 }
 
-/* Thread Details Page */
+/* Halaman Detail Thread */
 .thread-detail-container {
     display: flex;
     flex-direction: column;
@@ -912,7 +912,7 @@ input:focus, select:focus, textarea:focus {
     gap: 10px;
 }
 
-/* Comments section */
+/* Bagian Komentar */
 .comments-header {
     font-size: 16px;
     font-weight: 800;
@@ -975,7 +975,7 @@ input:focus, select:focus, textarea:focus {
     gap: 10px;
 }
 
-/* Upvote Button styling */
+/* Gaya Tombol Upvote */
 .upvote-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -1003,7 +1003,7 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--primary);
 }
 
-/* Admin Panel Table styling */
+/* Gaya Tabel Panel Admin */
 .admin-table-container {
     background: var(--bg-card);
     border-radius: var(--radius);
@@ -1039,7 +1039,7 @@ table.admin-table tr:hover {
     background: var(--primary-light);
 }
 
-/* General Layout utilities */
+/* Utilitas Tata Letak Umum */
 .breadcrumbs {
     margin-bottom: 20px;
     font-size: 13px;
@@ -1091,7 +1091,7 @@ footer {
     margin-top: auto;
 }
 
-/* Profile Picture Upload Section Styling */
+/* Gaya Bagian Unggah Foto Profil */
 .profile-pic-container {
     display: flex;
     flex-direction: column;

@@ -27,8 +27,8 @@ if (isset($_POST['update_profile'])) {
     } elseif ($angkatan < 1950 || $angkatan > date('Y') + 2) {
         $error = "Tahun angkatan tidak valid!";
     } else {
-        // --- Handle Profile Picture Upload ---
-        $new_foto_profil = null; // null means no change
+        // --- Tangani Unggah Foto Profil ---
+        $new_foto_profil = null; // null berarti tidak ada perubahan
         
         if (isset($_FILES['foto_profil']) && $_FILES['foto_profil']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['foto_profil'];
@@ -36,7 +36,7 @@ if (isset($_POST['update_profile'])) {
             $max_size = 2 * 1024 * 1024; // 2MB
             $upload_dir = __DIR__ . '/uploads/profile_pics/';
 
-            // Server-side MIME validation using finfo (cannot be spoofed unlike $_FILES['type'])
+            // Validasi MIME di sisi server menggunakan finfo (tidak bisa dipalsukan seperti $_FILES['type'])
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $real_mime = finfo_file($finfo, $file['tmp_name']);
             finfo_close($finfo);
@@ -46,18 +46,18 @@ if (isset($_POST['update_profile'])) {
             } elseif ($file['size'] > $max_size) {
                 $error = "Ukuran foto terlalu besar. Maksimal 2MB.";
             } else {
-                // Create upload directory if it doesn't exist
+                // Buat direktori upload jika belum ada
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0755, true);
                 }
 
-                // Generate a unique, sanitized filename
+                // Buat nama file yang unik dan aman
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
                 $new_filename = 'user_' . $user_id . '_' . time() . '.' . $ext;
                 $destination = $upload_dir . $new_filename;
 
                 if (move_uploaded_file($file['tmp_name'], $destination)) {
-                    // Delete the old profile picture if it exists
+                    // Hapus foto profil lama jika ada
                     $old_stmt = mysqli_prepare($conn, "SELECT foto_profil FROM users WHERE id = ?");
                     mysqli_stmt_bind_param($old_stmt, "i", $user_id);
                     mysqli_stmt_execute($old_stmt);
@@ -78,23 +78,23 @@ if (isset($_POST['update_profile'])) {
             }
         }
 
-        // Update database only if no error occurred during upload
+        // Update database hanya jika tidak ada error saat upload
         if (empty($error)) {
             if ($new_foto_profil !== null) {
-                // Update nama, jurusan, angkatan, AND foto_profil
-                // Types: s=nama, s=jurusan, i=angkatan, s=foto_profil, i=user_id
+                // Update nama, jurusan, angkatan, DAN foto_profil
+                // Tipe: s=nama, s=jurusan, i=angkatan, s=foto_profil, i=user_id
                 $stmt = mysqli_prepare($conn, "UPDATE users SET nama = ?, jurusan = ?, angkatan = ?, foto_profil = ? WHERE id = ?");
                 mysqli_stmt_bind_param($stmt, "ssisi", $nama, $jurusan, $angkatan, $new_foto_profil, $user_id);
             } else {
-                // Update only nama, jurusan, angkatan (no photo change)
-                // Types: s=nama, s=jurusan, i=angkatan, i=user_id
+                // Hanya update nama, jurusan, angkatan (tanpa perubahan foto)
+                // Tipe: s=nama, s=jurusan, i=angkatan, i=user_id
                 $stmt = mysqli_prepare($conn, "UPDATE users SET nama = ?, jurusan = ?, angkatan = ? WHERE id = ?");
                 mysqli_stmt_bind_param($stmt, "ssii", $nama, $jurusan, $angkatan, $user_id);
             }
 
             if (mysqli_stmt_execute($stmt)) {
                 $success = "Profil berhasil diperbarui!";
-                // Update session data
+                // Perbarui data sesi
                 $_SESSION['nama'] = $nama;
                 $_SESSION['jurusan'] = $jurusan;
                 $_SESSION['angkatan'] = $angkatan;
@@ -106,7 +106,7 @@ if (isset($_POST['update_profile'])) {
     }
 }
 
-// Fetch fresh user data from DB
+// Ambil data user terbaru dari DB
 $stmt = mysqli_prepare($conn, "SELECT username, nama, role, jurusan, angkatan, foto_profil FROM users WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
@@ -114,7 +114,7 @@ $user_res = mysqli_stmt_get_result($stmt);
 $user_data = mysqli_fetch_assoc($user_res);
 mysqli_stmt_close($stmt);
 
-// Fetch stats: total threads
+// Ambil statistik: total thread
 $stmt_threads = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM threads WHERE user_id = ?");
 mysqli_stmt_bind_param($stmt_threads, "i", $user_id);
 mysqli_stmt_execute($stmt_threads);
@@ -122,7 +122,7 @@ $res_threads = mysqli_stmt_get_result($stmt_threads);
 $threads_count = mysqli_fetch_assoc($res_threads)['total'];
 mysqli_stmt_close($stmt_threads);
 
-// Fetch stats: total comments
+// Ambil statistik: total komentar
 $stmt_comments = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM comments WHERE user_id = ?");
 mysqli_stmt_bind_param($stmt_comments, "i", $user_id);
 mysqli_stmt_execute($stmt_comments);

@@ -9,7 +9,7 @@ $db_name = "communityhub";
 
 // PHP 8.1+ compatibility: catch connection exception if database/server is down
 try {
-    // Disable strict exception throwing temporarily to handle error using our custom message
+    // Nonaktifkan sementara mode exception untuk menangani error dengan pesan kustom
     $driver = new mysqli_driver();
     $driver->report_mode = MYSQLI_REPORT_OFF;
     
@@ -43,7 +43,7 @@ if (!$db_selected || !$tables_exist) {
     </div>");
 }
 
-// Dynamic Auto-Migration: Add foto_profil if missing
+// Migrasi Otomatis Dinamis: Tambahkan foto_profil jika belum ada
 $column_check = @mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'foto_profil'");
 if ($column_check && mysqli_num_rows($column_check) == 0) {
     @mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `foto_profil` VARCHAR(255) DEFAULT NULL AFTER `role`");

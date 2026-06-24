@@ -16,8 +16,8 @@ include 'includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch all courses along with assigned dosen name and thread stats
-// Fixed ONLY_FULL_GROUP_BY database bug by grouping by all non-aggregated columns
+// Ambil semua mata kuliah beserta nama dosen yang ditugaskan dan statistik thread
+// Perbaikan bug ONLY_FULL_GROUP_BY dengan mengelompokkan semua kolom non-agregat
 $courses_query = "
     SELECT 
         c.id, 
@@ -38,7 +38,7 @@ $courses_result = mysqli_query($conn, $courses_query);
 
 <div class="container">
     <div class="dashboard-grid">
-        <!-- Main Content (Courses list) -->
+        <!-- Konten Utama (Daftar Mata Kuliah) -->
         <div>
             <div class="section-title">
                 <h2>Kategori Mata Kuliah</h2>
@@ -85,7 +85,7 @@ $courses_result = mysqli_query($conn, $courses_query);
             <?php } ?>
         </div>
 
-        <!-- Sidebar Widget -->
+        <!-- Widget Sidebar -->
         <div>
             <div class="profile-widget">
                 <?php 

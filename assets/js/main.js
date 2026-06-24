@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // ═══════════════════════════════════════════════════════════
-    // 1. Dark Mode Toggle
+    // 1. Ganti Tema Gelap/Terang
     // ═══════════════════════════════════════════════════════════
     const themeToggleBtn = document.getElementById('theme-toggle');
     if (themeToggleBtn) {
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 2. Mobile Navigation Toggle (hamburger menu)
+    // 2. Toggle Navigasi Mobile (hamburger menu)
     // ═══════════════════════════════════════════════════════════
     const navLinks  = document.querySelector('.nav-links');
     const navToggle = document.getElementById('nav-toggle');
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
             navLinks.classList.toggle('open');
             navToggle.setAttribute('aria-expanded', navLinks.classList.contains('open'));
         });
-        // Close on outside click
+        // Tutup saat klik di luar area nav
         document.addEventListener('click', function (e) {
             if (!navToggle.contains(e.target) && !navLinks.contains(e.target)) {
                 navLinks.classList.remove('open');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 3. Profile Picture Live Preview & Validation
+    // 3. Preview Langsung & Validasi Foto Profil
     // ═══════════════════════════════════════════════════════════
     const profilePicInput   = document.getElementById('foto_profil');
     const previewImg        = document.getElementById('preview-image');
@@ -74,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 4. Alert Auto-dismiss + Close Button
+    // 4. Notifikasi Alert + Tombol Tutup
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('.alert').forEach(function (alert) {
-        // Add a close button
+        // Tambahkan tombol tutup
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '&times;';
         closeBtn.className = 'alert-close-btn';
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         closeBtn.addEventListener('click', function () { fadeOut(alert); });
         alert.insertBefore(closeBtn, alert.firstChild);
 
-        // Auto-dismiss success alerts after 5 seconds
+        // Sembunyikan otomatis alert sukses setelah 5 detik
         if (alert.classList.contains('alert-success')) {
             setTimeout(function () { fadeOut(alert); }, 5000);
         }
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 5. Character Counter for Textareas
+    // 5. Penghitung Karakter untuk Textarea
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('textarea').forEach(function (ta) {
         const maxLen = ta.getAttribute('maxlength');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 6. Auto-resize Textarea
+    // 6. Otomatis Perbesar Textarea
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('textarea').forEach(function (ta) {
         ta.style.overflow = 'hidden';
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 7. Password Visibility Toggle
+    // 7. Toggle Tampilkan/Sembunyikan Password
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('input[type="password"]').forEach(function (input) {
         const wrapper = document.createElement('div');
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 8. Upvote Button Animation
+    // 8. Animasi Tombol Upvote
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('.upvote-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 9. Active Nav Link Highlight
+    // 9. Sorot Tautan Nav yang Aktif
     // ═══════════════════════════════════════════════════════════
     const currentPath = window.location.pathname.split('/').pop();
     document.querySelectorAll('nav .nav-item').forEach(function (link) {
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 10. Smooth Scroll to #comments anchor
+    // 10. Gulir Halus ke Anchor #comments
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('a[href="#comments"]').forEach(function (a) {
         a.addEventListener('click', function (e) {
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 11. Stat Counter Animations (Homepage)
+    // 11. Animasi Penghitung Statistik (Halaman Utama)
     // ═══════════════════════════════════════════════════════════
     document.querySelectorAll('.stat-num').forEach(function (el) {
         const target = parseInt(el.textContent, 10);
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // 12. Fade-in cards on scroll (Intersection Observer)
+    // 12. Animasi Fade-in Kartu saat Scroll (Intersection Observer)
     // ═══════════════════════════════════════════════════════════
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver(function (entries) {
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 13. Back-to-Top Button
+    // 13. Tombol Kembali ke Atas
     // ═══════════════════════════════════════════════════════════
     const backTop = document.createElement('button');
     backTop.id    = 'back-to-top';
@@ -246,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-// ═══════════════════════════════════════════════════════════════
-// Global Toast Notification Function
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+// Fungsi Toast Notifikasi Global
+// ════════════════════════════════════════════════════════════════
 function showToast(message, type) {
     type = type || 'info';
     let container = document.getElementById('toast-container');

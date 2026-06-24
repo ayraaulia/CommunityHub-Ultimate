@@ -3,7 +3,7 @@
 session_start();
 require_once 'includes/db.php';
 
-// Access check: only admins can access this page
+// Cek akses: hanya admin yang boleh mengakses halaman ini
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: dashboard.php");
     exit();
@@ -14,10 +14,10 @@ $success_course = '';
 $error_user     = '';
 $success_user   = '';
 
-// Handle Course & User Actions
+// Tangani Aksi Mata Kuliah & Pengguna
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // 1. Add Course
+    // 1. Tambah Mata Kuliah
     if (isset($_POST['add_course'])) {
         $code     = strtoupper(trim($_POST['code']));
         $name     = trim($_POST['name']);
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($code) || empty($name)) {
             $error_course = "Kode dan Nama mata kuliah wajib diisi!";
         } else {
-            // Check duplicate code or name
+            // Cek kode atau nama duplikat
             $chk = mysqli_prepare($conn, "SELECT id FROM courses WHERE code = ? OR name = ?");
             mysqli_stmt_bind_param($chk, "ss", $code, $name);
             mysqli_stmt_execute($chk);
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 2. Update Course
+    // 2. Perbarui Mata Kuliah
     if (isset($_POST['update_course'])) {
         $edit_id  = intval($_POST['edit_id']);
         $code     = strtoupper(trim($_POST['code']));
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($code) || empty($name)) {
             $error_course = "Kode dan Nama mata kuliah wajib diisi!";
         } else {
-            // Check duplicate (exclude current course itself)
+            // Cek duplikat (kecualikan mata kuliah yang sedang diedit)
             $chk = mysqli_prepare($conn, "SELECT id FROM courses WHERE (code = ? OR name = ?) AND id != ?");
             mysqli_stmt_bind_param($chk, "ssi", $code, $name, $edit_id);
             mysqli_stmt_execute($chk);
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3. Delete Course
+    // 3. Hapus Mata Kuliah
     if (isset($_POST['delete_course'])) {
         $delete_id = intval($_POST['course_id']);
         $stmt = mysqli_prepare($conn, "DELETE FROM courses WHERE id = ?");
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 4. Update User Role
+    // 4. Ubah Role Pengguna
     if (isset($_POST['update_user_role'])) {
         $target_user_id = intval($_POST['user_id']);
         $new_role       = $_POST['role'];
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 5. Delete User
+    // 5. Hapus Pengguna
     if (isset($_POST['delete_user'])) {
         $target_user_id = intval($_POST['user_id']);
         if ($target_user_id == $_SESSION['user_id']) {
@@ -145,14 +145,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all lecturers (dosen) for assignment dropdown
+// Ambil semua dosen untuk dropdown penugasan
 $dosen_res = mysqli_query($conn, "SELECT id, nama FROM users WHERE role = 'dosen' ORDER BY nama ASC");
 $lecturers = [];
 while ($d = mysqli_fetch_assoc($dosen_res)) {
     $lecturers[] = $d;
 }
 
-// Check if in Course Edit Mode
+// Cek apakah dalam Mode Edit Mata Kuliah
 $edit_mode      = false;
 $course_to_edit = null;
 if (isset($_GET['edit_course'])) {
@@ -165,11 +165,11 @@ if (isset($_GET['edit_course'])) {
     mysqli_stmt_close($stmt);
 
     if (!$course_to_edit) {
-        $edit_mode = false; // Guard against invalid id in URL
+        $edit_mode = false; // Perlindungan jika id di URL tidak valid
     }
 }
 
-// Fetch all courses for management table (with thread count)
+// Ambil semua mata kuliah untuk tabel manajemen (beserta jumlah thread)
 $courses_res = mysqli_query($conn, "
     SELECT c.id, c.code, c.name, c.description, u.nama AS dosen_name, c.dosen_id,
            COUNT(t.id) AS thread_count
@@ -180,10 +180,10 @@ $courses_res = mysqli_query($conn, "
     ORDER BY c.code ASC
 ");
 
-// Fetch all users for user management table
+// Ambil semua pengguna untuk tabel manajemen pengguna
 $users_res = mysqli_query($conn, "SELECT id, username, nama, role, jurusan, angkatan FROM users ORDER BY role ASC, id DESC");
 
-// System stats
+// Statistik sistem
 $stats_q   = mysqli_query($conn, "
     SELECT
         (SELECT COUNT(*) FROM users)    AS total_users,

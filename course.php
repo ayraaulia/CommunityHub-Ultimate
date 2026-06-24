@@ -58,14 +58,14 @@ if (isset($_POST['create_thread'])) {
     }
 }
 
-// Fetch Search and Filter query parameters
+// Ambil parameter pencarian dan filter dari query string
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'latest';
 if (!in_array($filter, ['latest', 'popular', 'unsolved'])) {
     $filter = 'latest';
 }
 
-// Build Threads Query dynamically
+// Bangun query Thread secara dinamis
 $threads_query = "
     SELECT 
         t.id, 
@@ -112,14 +112,14 @@ mysqli_stmt_bind_param($stmt_threads, $bind_types, ...$bind_params);
 mysqli_stmt_execute($stmt_threads);
 $threads_result = mysqli_stmt_get_result($stmt_threads);
 
-// Store in array (prevents double-query and closes stmt before HTML)
+// Simpan di array (mencegah double-query dan menutup stmt sebelum HTML)
 $threads_data = [];
 while ($row = mysqli_fetch_assoc($threads_result)) {
     $threads_data[] = $row;
 }
 mysqli_stmt_close($stmt_threads);
 
-// Set page title and include header AFTER all logic & redirects
+// Set judul halaman dan include header SETELAH semua logika & redirect selesai
 $page_title = $course['code'] . " - " . $course['name'];
 include 'includes/header.php';
 ?>

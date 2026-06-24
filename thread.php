@@ -13,7 +13,7 @@ $thread_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $user_id   = $_SESSION['user_id'];
 $error_msg = '';
 
-// 1. Fetch thread details
+// 1. Ambil detail thread
 $stmt_thread = mysqli_prepare($conn, "
     SELECT t.id, t.course_id, t.user_id, t.title, t.content, t.is_pinned, t.is_solved, t.created_at,
            u.nama AS author_name, u.role AS author_role, u.username AS author_username, u.foto_profil AS author_avatar
@@ -31,22 +31,22 @@ if (!$thread) {
     exit();
 }
 
-// 2. Fetch course details to check Dosen/Moderator
+// 2. Ambil detail mata kuliah untuk cek Dosen/Moderator
 $stmt_course = mysqli_prepare($conn, "SELECT name, code, dosen_id FROM courses WHERE id = ?");
 mysqli_stmt_bind_param($stmt_course, "i", $thread['course_id']);
 mysqli_stmt_execute($stmt_course);
 $course = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_course));
 mysqli_stmt_close($stmt_course);
 
-// 3. Define Roles & Permissions
+// 3. Tentukan Role & Hak Akses
 $is_admin     = ($_SESSION['role'] === 'admin');
 $is_moderator = ($_SESSION['role'] === 'dosen' && $_SESSION['user_id'] == $course['dosen_id']);
 $is_author    = ($_SESSION['user_id'] == $thread['user_id']);
 
-// 4. Handle POST Actions
+// 4. Tangani Aksi POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Action A: Create comment
+    // Aksi A: Buat komentar
     if (isset($_POST['create_comment'])) {
         $comment_content = trim($_POST['comment_content']);
         if (empty($comment_content)) {
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Action B: Toggle Solved (Author only)
+    // Aksi B: Toggle Terjawab (hanya pemilik thread)
     if (isset($_POST['toggle_solved'])) {
         if ($is_author) {
             $new_solved = $thread['is_solved'] ? 0 : 1;
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Action C: Toggle Pin (Admin / Moderator of this course only)
+    // Aksi C: Toggle Pin (hanya Admin / Moderator mata kuliah ini)
     if (isset($_POST['toggle_pin'])) {
         if ($is_admin || $is_moderator) {
             $new_pinned = $thread['is_pinned'] ? 0 : 1;
@@ -89,11 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Action D: Delete Comment (Admin / Moderator / Comment Owner)
+    // Aksi D: Hapus Komentar (Admin / Moderator / Pemilik Komentar)
     if (isset($_POST['delete_comment'])) {
         $comment_id = intval($_POST['comment_id']);
 
-        // Check comment ownership
+        // Cek kepemilikan komentar
         $chk = mysqli_prepare($conn, "SELECT user_id FROM comments WHERE id = ? AND thread_id = ?");
         mysqli_stmt_bind_param($chk, "ii", $comment_id, $thread_id);
         mysqli_stmt_execute($chk);
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Action E: Delete Thread (Admin / Moderator / Thread Author)
+    // Aksi E: Hapus Thread (Admin / Moderator / Pemilik Thread)
     if (isset($_POST['delete_thread'])) {
         if ($is_admin || $is_moderator || $is_author) {
             $stmt = mysqli_prepare($conn, "DELETE FROM threads WHERE id = ?");
@@ -124,11 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Action F: Upvote comment (All logged-in users)
+    // Aksi F: Upvote komentar (semua pengguna yang login)
     if (isset($_POST['upvote_comment'])) {
         $comment_id = intval($_POST['comment_id']);
 
-        // Check if already upvoted
+        // Cek apakah sudah pernah upvote
         $chk_stmt = mysqli_prepare($conn, "SELECT id FROM upvotes WHERE comment_id = ? AND user_id = ?");
         mysqli_stmt_bind_param($chk_stmt, "ii", $comment_id, $user_id);
         mysqli_stmt_execute($chk_stmt);
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 5. Fetch Comments list (ordered by upvotes desc, date asc)
+// 5. Ambil daftar Komentar (urut upvote terbanyak, lalu tanggal terlama)
 $comments_query = "
     SELECT
         c.id,
@@ -177,7 +177,7 @@ mysqli_stmt_bind_param($stmt_comments, "ii", $user_id, $thread_id);
 mysqli_stmt_execute($stmt_comments);
 $comments_result = mysqli_stmt_get_result($stmt_comments);
 
-// Store in array to close stmt before HTML output
+// Simpan di array agar stmt bisa ditutup sebelum output HTML
 $comments_data  = [];
 while ($cmt = mysqli_fetch_assoc($comments_result)) {
     $comments_data[] = $cmt;
@@ -185,7 +185,7 @@ while ($cmt = mysqli_fetch_assoc($comments_result)) {
 mysqli_stmt_close($stmt_comments);
 $comments_count = count($comments_data);
 
-// Set page title and include header AFTER all logic & redirects
+// Set judul halaman dan include header SETELAH semua logika & redirect selesai
 $page_title = $thread['title'];
 include 'includes/header.php';
 ?>

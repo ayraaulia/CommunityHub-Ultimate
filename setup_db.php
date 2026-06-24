@@ -7,23 +7,23 @@ $username = "root";
 $password = "";
 $dbname = "communityhub";
 
-// 1. Connect to MySQL without specifying database
+// 1. Hubungkan ke MySQL tanpa menentukan database
 $conn = mysqli_connect($host, $username, $password);
 if (!$conn) {
     die("<div style='color:red; font-family:sans-serif;'>Connection failed: " . mysqli_connect_error() . "</div>");
 }
 
-// 2. Drop and Create database to ensure clean engine state (fixes orphaned InnoDB tables)
+// 2. Drop dan buat ulang database untuk memastikan kondisi bersih (memperbaiki tabel InnoDB yang tertinggal)
 mysqli_query($conn, "DROP DATABASE IF EXISTS `$dbname`");
 $db_query = "CREATE DATABASE `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 if (!mysqli_query($conn, $db_query)) {
     die("<div style='color:red; font-family:sans-serif;'>Error creating database: " . mysqli_error($conn) . "</div>");
 }
 
-// 3. Connect to the specific database
+// 3. Hubungkan ke database yang dipilih
 mysqli_select_db($conn, $dbname);
 
-// 4. Read and execute schema.sql
+// 4. Baca dan jalankan schema.sql
 $schema_file = __DIR__ . '/schema.sql';
 if (!file_exists($schema_file)) {
     die("<div style='color:red; font-family:sans-serif;'>schema.sql file not found!</div>");
@@ -31,9 +31,9 @@ if (!file_exists($schema_file)) {
 
 $schema_sql = file_get_contents($schema_file);
 
-// Execute multi query
+// Jalankan multi query
 if (mysqli_multi_query($conn, $schema_sql)) {
-    // Flush results of multi_query to free connection
+    // Flush hasil multi_query untuk membebaskan koneksi
     do {
         if ($result = mysqli_store_result($conn)) {
             mysqli_free_result($result);
@@ -43,8 +43,8 @@ if (mysqli_multi_query($conn, $schema_sql)) {
     die("<div style='color:red; font-family:sans-serif;'>Error executing schema: " . mysqli_error($conn) . "</div>");
 }
 
-// 5. Seed initial data
-// Clear profile picture uploads folder if it exists
+// 5. Isi data awal
+// Kosongkan folder unggahan foto profil jika ada
 $upload_dir = __DIR__ . '/uploads/profile_pics/';
 if (is_dir($upload_dir)) {
     $files = glob($upload_dir . '*');
@@ -55,7 +55,7 @@ if (is_dir($upload_dir)) {
     }
 }
 
-// Clear existing data to allow clean re-runs
+// Hapus data lama agar bisa dijalankan ulang dengan bersih
 mysqli_query($conn, "SET FOREIGN_KEY_CHECKS = 0");
 mysqli_query($conn, "TRUNCATE TABLE upvotes");
 mysqli_query($conn, "TRUNCATE TABLE comments");
@@ -64,7 +64,7 @@ mysqli_query($conn, "TRUNCATE TABLE courses");
 mysqli_query($conn, "TRUNCATE TABLE users");
 mysqli_query($conn, "SET FOREIGN_KEY_CHECKS = 1");
 
-// Inserts users (admin, dosen, mahasiswa)
+// Masukkan data pengguna (admin, dosen, mahasiswa)
 $users = [
     [
         'username' => 'admin',
@@ -125,7 +125,7 @@ foreach ($users as $u) {
     mysqli_stmt_close($stmt);
 }
 
-// Inserts courses
+// Masukkan data mata kuliah
 $courses = [
     [
         'name' => 'Pemrograman Web',
@@ -149,7 +149,7 @@ $courses = [
         'name' => 'Jaringan Komputer',
         'code' => 'IF-304',
         'description' => 'Mempelajari arsitektur jaringan komputer, protokol TCP/IP, routing, subnetting, dan keamanan jaringan dasar.',
-        'dosen_id' => null // No assigned dosen initially
+        'dosen_id' => null // Belum ada dosen yang ditugaskan
     ]
 ];
 
@@ -162,7 +162,7 @@ foreach ($courses as $c) {
     mysqli_stmt_close($stmt);
 }
 
-// Inserts threads
+// Masukkan data thread
 $threads = [
     [
         'course_id' => $course_ids['Pemrograman Web'],
@@ -207,25 +207,25 @@ foreach ($threads as $t) {
     mysqli_stmt_close($stmt);
 }
 
-// Inserts comments
+// Masukkan data komentar
 $comments = [
     [
-        'thread_id' => $thread_ids[0], // CORS error (solved)
+        'thread_id' => $thread_ids[0], // thread error CORS (sudah terjawab)
         'user_id' => $user_ids['pakbudi'],
         'content' => "Untuk menyelesaikan masalah CORS di PHP, kamu perlu menambahkan header CORS di awal file PHP kamu sebelum mengeluarkan output apapun.\n\nContoh code:\n```php\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n```\nJika menggunakan request ber-credential (cookie/session), origin `*` harus diganti dengan domain spesifik seperti `http://localhost:3000` dan tambahkan `Access-Control-Allow-Credentials: true`."
     ],
     [
-        'thread_id' => $thread_ids[0], // CORS error
+        'thread_id' => $thread_ids[0], // thread error CORS
         'user_id' => $user_ids['citra'],
         'content' => "Wah terima kasih pak Budi! Kemarin saya juga kena error yang sama dan solusi dari bapak langsung berhasil saat saya coba di local."
     ],
     [
-        'thread_id' => $thread_ids[1], // CSS Framework
+        'thread_id' => $thread_ids[1], // thread Framework CSS
         'user_id' => $user_ids['pakbudi'],
         'content' => "Untuk tugas besar Pemrograman Web, dibebaskan menggunakan framework CSS. Namun nilai plus akan diberikan bagi kelompok yang memahami dasar layouting grid/flexbox sendiri. Pastikan responsivitasnya berjalan baik di mobile."
     ],
     [
-        'thread_id' => $thread_ids[2], // JOIN
+        'thread_id' => $thread_ids[2], // thread JOIN
         'user_id' => $user_ids['ibuani'],
         'content' => "INNER JOIN hanya menampilkan baris yang memiliki kecocokan di kedua tabel. Sedangkan LEFT JOIN akan menampilkan semua baris dari tabel kiri, meskipun tabel kanan tidak memiliki kecocokan (kolom tabel kanan akan bernilai NULL).\n\nContoh: Jika ingin menampilkan daftar Mahasiswa beserta Mata Kuliah yang diambil (di mana ada mahasiswa yang belum mengambil matkul), gunakan LEFT JOIN agar mahasiswa tersebut tetap tampil di daftar."
     ]
@@ -240,10 +240,10 @@ foreach ($comments as $com) {
     mysqli_stmt_close($stmt);
 }
 
-// Inserts upvotes
+// Masukkan data upvote
 $upvotes = [
     [
-        'comment_id' => $comment_ids[0], // Pak Budi's CORS comment
+        'comment_id' => $comment_ids[0], // komentar CORS Pak Budi
         'user_id' => $user_ids['mahasiswa']
     ],
     [
@@ -251,11 +251,11 @@ $upvotes = [
         'user_id' => $user_ids['citra']
     ],
     [
-        'comment_id' => $comment_ids[2], // Pak Budi's CSS comment
+        'comment_id' => $comment_ids[2], // komentar CSS Pak Budi
         'user_id' => $user_ids['mahasiswa']
     ],
     [
-        'comment_id' => $comment_ids[3], // Ibu Ani's JOIN comment
+        'comment_id' => $comment_ids[3], // komentar JOIN Ibu Ani
         'user_id' => $user_ids['dodi']
     ]
 ];
