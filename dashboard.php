@@ -16,6 +16,9 @@ include 'includes/header.php';
 
 $user_id = $_SESSION['user_id'];
 
+// Ambil parameter pencarian mata kuliah
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Ambil semua mata kuliah beserta nama dosen yang ditugaskan dan statistik thread
 // Perbaikan bug ONLY_FULL_GROUP_BY dengan mengelompokkan semua kolom non-agregat
 $courses_query = "
@@ -30,10 +33,35 @@ $courses_query = "
     FROM courses c
     LEFT JOIN users u ON c.dosen_id = u.id
     LEFT JOIN threads t ON c.id = t.course_id
-    GROUP BY c.id, c.name, c.code, c.description, u.nama
-    ORDER BY c.code ASC
 ";
-$courses_result = mysqli_query($conn, $courses_query);
+
+$bind_types  = '';
+$bind_params = [];
+
+if (!empty($search)) {
+    $courses_query .= " WHERE (c.name LIKE ? OR c.code LIKE ? OR c.description LIKE ?) ";
+    $search_param   = '%' . $search . '%';
+    $bind_types    .= 'sss';
+    $bind_params[]  = $search_param;
+    $bind_params[]  = $search_param;
+    $bind_params[]  = $search_param;
+}
+
+$courses_query .= " GROUP BY c.id, c.name, c.code, c.description, u.nama ORDER BY c.code ASC ";
+
+$stmt_courses = mysqli_prepare($conn, $courses_query);
+if (!empty($bind_params)) {
+    mysqli_stmt_bind_param($stmt_courses, $bind_types, ...$bind_params);
+}
+mysqli_stmt_execute($stmt_courses);
+$courses_result = mysqli_stmt_get_result($stmt_courses);
+
+// Simpan ke array agar stmt bisa ditutup sebelum output HTML
+$courses_data = [];
+while ($row = mysqli_fetch_assoc($courses_result)) {
+    $courses_data[] = $row;
+}
+mysqli_stmt_close($stmt_courses);
 ?>
 
 <div class="container">
@@ -43,10 +71,30 @@ $courses_result = mysqli_query($conn, $courses_query);
             <div class="section-title">
                 <h2>Kategori Mata Kuliah</h2>
             </div>
-            
-            <?php if (mysqli_num_rows($courses_result) > 0) { ?>
+
+            <!-- Search Bar Mata Kuliah -->
+            <form method="GET" action="dashboard.php" class="search-filter-box" style="margin-bottom: 20px;">
+                <div class="search-form">
+                    <input type="text" name="search"
+                           placeholder="Cari mata kuliah berdasarkan nama, kode, atau deskripsi..."
+                           value="<?php echo htmlspecialchars($search); ?>"
+                           style="flex:1;">
+                    <button type="submit" class="btn">🔍 Cari</button>
+                    <?php if (!empty($search)) { ?>
+                        <a href="dashboard.php" class="btn btn-secondary">Reset</a>
+                    <?php } ?>
+                </div>
+            </form>
+
+            <?php if (!empty($search)) { ?>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+                    Menampilkan <strong><?php echo count($courses_data); ?></strong> hasil untuk kata kunci: "<strong><?php echo htmlspecialchars($search); ?></strong>"
+                </p>
+            <?php } ?>
+
+            <?php if (count($courses_data) > 0) { ?>
                 <div class="course-list">
-                    <?php while ($row = mysqli_fetch_assoc($courses_result)) { 
+                    <?php foreach ($courses_data as $row) { 
                         $total = intval($row['total_threads']);
                         $solved = intval($row['solved_threads']);
                         $unsolved = $total - $solved;
@@ -77,6 +125,12 @@ $courses_result = mysqli_query($conn, $courses_query);
                             </div>
                         </div>
                     <?php } ?>
+                </div>
+            <?php } elseif (!empty($search)) { ?>
+                <div class="empty-state">
+                    <p style="font-size:28px; margin-bottom:10px;">🔍</p>
+                    <strong>Tidak ada mata kuliah ditemukan untuk "<?php echo htmlspecialchars($search); ?>"</strong>
+                    <p style="margin-top:8px;"><a href="dashboard.php">Lihat semua mata kuliah</a></p>
                 </div>
             <?php } else { ?>
                 <div class="empty-state">
